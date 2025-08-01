@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام نتائج البكالوريا المتكامل</title>
+    <title>نظام نتائج البكالوريا</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <style>
@@ -19,6 +19,18 @@
             color: #fff;
             min-height: 100vh;
             padding: 20px;
+            transition: background 1s ease;
+        }
+        
+        body.celebration {
+            background: linear-gradient(135deg, #4a8c4a, #3a7ca5, #2d5b7c);
+            animation: celebrationPulse 3s infinite;
+        }
+        
+        @keyframes celebrationPulse {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
         .container {
@@ -526,9 +538,31 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        /* تأثيرات احتفالية */
+        .celebration-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
+    <div class="celebration-effect" id="celebration-effect"></div>
+    
     <div class="container">
         <header>
             <div class="logo-container">
@@ -776,34 +810,40 @@
                 
                 // استخراج المقاطعات
                 const district = student.moughataa || 'غير معروف';
-                dataHierarchy.states[state].districts.add(district);
-                
-                if (!dataHierarchy.districts[district]) {
-                    dataHierarchy.districts[district] = {
-                        schools: new Set(),
-                        centers: new Set()
-                    };
-                }
-                
-                // استخراج المدارس
-                const school = student.ecole || 'غير معروف';
-                dataHierarchy.states[state].schools.add(school);
-                dataHierarchy.districts[district].schools.add(school);
-                
-                if (!dataHierarchy.schools[school]) {
-                    dataHierarchy.schools[school] = {
-                        centers: new Set()
-                    };
-                }
-                
-                // استخراج المراكز
-                const center = student.centre || 'غير معروف';
-                dataHierarchy.states[state].centers.add(center);
-                dataHierarchy.districts[district].centers.add(center);
-                dataHierarchy.schools[school].centers.add(center);
-                
-                if (!dataHierarchy.centers[center]) {
-                    dataHierarchy.centers[center] = true;
+                if (state && district) {
+                    dataHierarchy.states[state].districts.add(district);
+                    
+                    if (!dataHierarchy.districts[district]) {
+                        dataHierarchy.districts[district] = {
+                            schools: new Set(),
+                            centers: new Set()
+                        };
+                    }
+                    
+                    // استخراج المدارس
+                    const school = student.ecole || 'غير معروف';
+                    if (school) {
+                        dataHierarchy.states[state].schools.add(school);
+                        dataHierarchy.districts[district].schools.add(school);
+                        
+                        if (!dataHierarchy.schools[school]) {
+                            dataHierarchy.schools[school] = {
+                                centers: new Set()
+                            };
+                        }
+                        
+                        // استخراج المراكز
+                        const center = student.centre || 'غير معروف';
+                        if (center) {
+                            dataHierarchy.states[state].centers.add(center);
+                            dataHierarchy.districts[district].centers.add(center);
+                            dataHierarchy.schools[school].centers.add(center);
+                            
+                            if (!dataHierarchy.centers[center]) {
+                                dataHierarchy.centers[center] = true;
+                            }
+                        }
+                    }
                 }
             });
         }
@@ -944,6 +984,11 @@
                         behavior: 'smooth',
                         block: 'start'
                     });
+                    
+                    // إذا كان الطالب ناجحاً، قم بالاحتفال
+                    if (foundStudent.decision && foundStudent.decision.toLowerCase().includes("admis")) {
+                        startCelebration();
+                    }
                 } else {
                     // إخفاء رسالة التحميل وإظهار رسالة الخطأ
                     document.getElementById('loading-student').innerHTML = `
@@ -1177,6 +1222,75 @@
                 displayStudents(displayStudents, title);
                 document.getElementById('loading-top').style.display = 'none';
             }, 300);
+        }
+
+        // بدء الاحتفال للطالب الناجح
+        function startCelebration() {
+            // إضافة فئة الاحتفال للجسم
+            document.body.classList.add('celebration');
+            
+            // عرض تأثيرات الاحتفال
+            const celebrationEffect = document.getElementById('celebration-effect');
+            celebrationEffect.style.display = 'block';
+            
+            // إنشاء قطع الاحتفال
+            for (let i = 0; i < 150; i++) {
+                createConfetti();
+            }
+            
+            // إيقاف الاحتفال بعد 5 ثوانٍ
+            setTimeout(() => {
+                document.body.classList.remove('celebration');
+                celebrationEffect.style.display = 'none';
+                celebrationEffect.innerHTML = '';
+            }, 5000);
+        }
+        
+        // إنشاء قطعة احتفال
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            
+            // ألوان عشوائية
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.backgroundColor = color;
+            
+            // حجم عشوائي
+            const size = Math.random() * 10 + 5;
+            confetti.style.width = `${size}px`;
+            confetti.style.height = `${size}px`;
+            
+            // موضع عشوائي
+            confetti.style.left = `${Math.random() * 100}vw`;
+            confetti.style.top = `${Math.random() * 100}vh`;
+            
+            // حركة عشوائية
+            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+            
+            // إضافة القطعة إلى تأثير الاحتفال
+            document.getElementById('celebration-effect').appendChild(confetti);
+            
+            // تحريك القطعة
+            animateConfetti(confetti);
+        }
+        
+        // تحريك قطعة الاحتفال
+        function animateConfetti(confetti) {
+            const duration = Math.random() * 3 + 2;
+            const xMovement = (Math.random() - 0.5) * 200;
+            const yMovement = Math.random() * -100 - 50;
+            
+            confetti.style.transition = `all ${duration}s ease-out`;
+            confetti.style.transform = `translate(${xMovement}px, ${yMovement}px) rotate(${Math.random() * 720}deg)`;
+            confetti.style.opacity = '0';
+            
+            // إزالة القطعة بعد انتهاء الحركة
+            setTimeout(() => {
+                if (confetti.parentNode) {
+                    confetti.parentNode.removeChild(confetti);
+                }
+            }, duration * 1000);
         }
 
         // تهيئة التطبيق عند تحميل الصفحة
