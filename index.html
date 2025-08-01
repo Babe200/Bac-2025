@@ -585,12 +585,11 @@
                 <div class="option-btn active" data-type="national">العشرة الأوائل على مستوى الوطن</div>
                 <div class="option-btn" data-type="branch">فرز حسب الشعبة</div>
                 <div class="option-btn" data-type="state">فرز حسب الولاية</div>
-                <div class="option-btn" data-type="district">فرز حسب المقاطعة</div>
                 <div class="option-btn" data-type="school">فرز حسب المدرسة</div>
                 <div class="option-btn" data-type="center">فرز حسب المركز</div>
             </div>
             
-            <!-- فلاتر الفرز -->
+            <!-- فلاتر الفرز (تم إزالة فلتر المقاطعة) -->
             <div class="filters-container" id="filters-container">
                 <div class="filter-group">
                     <div class="filter-label">الشعبة</div>
@@ -603,13 +602,6 @@
                     <div class="filter-label">الولاية</div>
                     <select id="state-filter" class="filter-select">
                         <option value="">اختر الولاية</option>
-                    </select>
-                </div>
-                
-                <div class="filter-group">
-                    <div class="filter-label">المقاطعة</div>
-                    <select id="district-filter" class="filter-select">
-                        <option value="">اختر المقاطعة</option>
                     </select>
                 </div>
                 
@@ -705,15 +697,13 @@
         let currentFilters = {
             branch: '',
             state: '',
-            district: '',
             school: '',
             center: ''
         };
         
-        // هيكل البيانات الهرمي
+        // هيكل البيانات الهرمي (تم إزالة المقاطعات)
         const dataHierarchy = {
             states: {},
-            districts: {},
             schools: {},
             centers: {},
             branches: new Set()
@@ -756,7 +746,7 @@
                 // استخراج العشرة الأوائل على مستوى الوطن
                 nationalTopStudents = allStudents.slice(0, 10);
                 
-                // استخراج البيانات الهرمية
+                // استخراج البيانات الهرمية (بدون المقاطعات)
                 extractHierarchicalData();
                 
                 // تعبئة فلاتر الفرز
@@ -779,11 +769,10 @@
             }
         }
 
-        // استخراج البيانات الهرمية
+        // استخراج البيانات الهرمية (بدون المقاطعات)
         function extractHierarchicalData() {
             dataHierarchy.branches = new Set();
             dataHierarchy.states = {};
-            dataHierarchy.districts = {};
             dataHierarchy.schools = {};
             dataHierarchy.centers = {};
             
@@ -797,53 +786,37 @@
                 const state = extractStateFromCode(student.Code);
                 if (!dataHierarchy.states[state]) {
                     dataHierarchy.states[state] = {
-                        districts: new Set(),
                         schools: new Set(),
                         centers: new Set()
                     };
                 }
                 
-                // استخراج المقاطعات
-                const district = student.Centre || 'غير معروف';
-                if (state && district) {
-                    dataHierarchy.states[state].districts.add(district);
+                // استخراج المدارس
+                const school = student.Ecole || 'غير معروف';
+                if (school) {
+                    dataHierarchy.states[state].schools.add(school);
                     
-                    if (!dataHierarchy.districts[district]) {
-                        dataHierarchy.districts[district] = {
-                            schools: new Set(),
+                    if (!dataHierarchy.schools[school]) {
+                        dataHierarchy.schools[school] = {
                             centers: new Set()
                         };
                     }
                     
-                    // استخراج المدارس
-                    const school = student.Ecole || 'غير معروف';
-                    if (school) {
-                        dataHierarchy.states[state].schools.add(school);
-                        dataHierarchy.districts[district].schools.add(school);
+                    // استخراج المراكز
+                    const center = student.Centre || 'غير معروف';
+                    if (center) {
+                        dataHierarchy.states[state].centers.add(center);
+                        dataHierarchy.schools[school].centers.add(center);
                         
-                        if (!dataHierarchy.schools[school]) {
-                            dataHierarchy.schools[school] = {
-                                centers: new Set()
-                            };
-                        }
-                        
-                        // استخراج المراكز
-                        const center = student.Centre || 'غير معروف';
-                        if (center) {
-                            dataHierarchy.states[state].centers.add(center);
-                            dataHierarchy.districts[district].centers.add(center);
-                            dataHierarchy.schools[school].centers.add(center);
-                            
-                            if (!dataHierarchy.centers[center]) {
-                                dataHierarchy.centers[center] = true;
-                            }
+                        if (!dataHierarchy.centers[center]) {
+                            dataHierarchy.centers[center] = true;
                         }
                     }
                 }
             });
         }
 
-        // تعبئة فلاتر الفرز
+        // تعبئة فلاتر الفرز (بدون فلتر المقاطعة)
         function populateFilters() {
             // تعبئة فلتر الشعبة
             const branchFilter = document.getElementById('branch-filter');
@@ -865,10 +838,6 @@
                 stateFilter.appendChild(option);
             });
             
-            // تعبئة فلتر المقاطعة
-            const districtFilter = document.getElementById('district-filter');
-            districtFilter.innerHTML = '<option value="">اختر المقاطعة</option>';
-            
             // تعبئة فلتر المدرسة
             const schoolFilter = document.getElementById('school-filter');
             schoolFilter.innerHTML = '<option value="">اختر المدرسة</option>';
@@ -878,37 +847,13 @@
             centerFilter.innerHTML = '<option value="">اختر المركز</option>';
         }
 
-        // تحديث فلاتر المقاطعة بناءً على الولاية المختارة
-        function updateDistrictFilter(state) {
-            const districtFilter = document.getElementById('district-filter');
-            districtFilter.innerHTML = '<option value="">اختر المقاطعة</option>';
-            
-            if (state && dataHierarchy.states[state]) {
-                dataHierarchy.states[state].districts.forEach(district => {
-                    const option = document.createElement('option');
-                    option.value = district;
-                    option.textContent = district;
-                    districtFilter.appendChild(option);
-                });
-            }
-        }
-
-        // تحديث فلاتر المدرسة بناءً على الولاية والمقاطعة المختارة
-        function updateSchoolFilter(state, district) {
+        // تحديث فلاتر المدرسة بناءً على الولاية المختارة (بدون المقاطعة)
+        function updateSchoolFilter(state) {
             const schoolFilter = document.getElementById('school-filter');
             schoolFilter.innerHTML = '<option value="">اختر المدرسة</option>';
             
             if (state && dataHierarchy.states[state]) {
                 dataHierarchy.states[state].schools.forEach(school => {
-                    const option = document.createElement('option');
-                    option.value = school;
-                    option.textContent = school;
-                    schoolFilter.appendChild(option);
-                });
-            }
-            
-            if (district && dataHierarchy.districts[district]) {
-                dataHierarchy.districts[district].schools.forEach(school => {
                     const option = document.createElement('option');
                     option.value = school;
                     option.textContent = school;
@@ -1104,16 +1049,12 @@
             }
             decisionBox.style.display = 'flex';
             
-            // تعبئة التفاصيل الإضافية
+            // تعبئة التفاصيل الإضافية (بدون المقاطعة)
             const studentDetails = document.getElementById('student-details');
             studentDetails.innerHTML = `
                 <div class="info-item">
                     <div class="info-label">الولاية</div>
                     <div class="info-value">${extractStateFromCode(student.Code) || "غير معروف"}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">المقاطعة</div>
-                    <div class="info-value">${student.Centre || "غير معروف"}</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">المدرسة</div>
@@ -1184,7 +1125,7 @@
             return index !== -1 ? index + 1 : null;
         }
 
-        // تطبيق الفلاتر وعرض النتائج
+        // تطبيق الفلاتر وعرض النتائج (بدون المقاطعة)
         function applyFiltersAndDisplay() {
             // إظهار رسالة التحميل
             document.getElementById('loading-top').style.display = 'block';
@@ -1193,7 +1134,6 @@
             // الحصول على القيم المحددة
             const branch = document.getElementById('branch-filter').value;
             const state = document.getElementById('state-filter').value;
-            const district = document.getElementById('district-filter').value;
             const school = document.getElementById('school-filter').value;
             const center = document.getElementById('center-filter').value;
             
@@ -1209,11 +1149,6 @@
             if (state) {
                 filteredStudents = filteredStudents.filter(s => extractStateFromCode(s.Code) === state);
                 title += ` في ولاية ${state}`;
-            }
-            
-            if (district) {
-                filteredStudents = filteredStudents.filter(s => s.Centre === district);
-                title += ` في مقاطعة ${district}`;
             }
             
             if (school) {
@@ -1355,14 +1290,7 @@
             // إعداد تفاعلية فلاتر الولاية
             const stateFilter = document.getElementById('state-filter');
             stateFilter.addEventListener('change', function() {
-                updateDistrictFilter(this.value);
-                updateSchoolFilter(this.value, '');
-            });
-            
-            // إعداد تفاعلية فلاتر المقاطعة
-            const districtFilter = document.getElementById('district-filter');
-            districtFilter.addEventListener('change', function() {
-                updateSchoolFilter(stateFilter.value, this.value);
+                updateSchoolFilter(this.value);
             });
             
             // إعداد تفاعلية فلاتر المدرسة
