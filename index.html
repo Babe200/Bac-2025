@@ -379,6 +379,14 @@
             font-size: 1.3rem;
             text-align: center;
             gap: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .decision-box.show {
+            opacity: 1;
+            transform: translateY(0);
         }
         
         .decision-box.admis {
@@ -572,6 +580,30 @@
             text-align: center;
             margin-bottom: 20px;
         }
+        
+        /* شريط التقدم للنتيجة */
+        .result-progress {
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            transition: width 0.3s ease;
+        }
+        
+        /* تأثير النزول التدريجي */
+        .rolling-value {
+            display: inline-block;
+            min-width: 60px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -672,11 +704,15 @@
                     <!-- سيتم تعبئة معلومات الطالب هنا -->
                 </div>
                 
+                <div class="result-progress" id="result-progress">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                
                 <div class="total-score" id="total-score" style="display: none;">
                     <!-- سيتم تعبئة المجموع هنا -->
                 </div>
                 
-                <div class="decision-box" id="decision-box" style="display: none;">
+                <div class="decision-box" id="decision-box">
                     <!-- سيتم تعبئة القرار هنا -->
                 </div>
             </div>
@@ -906,6 +942,7 @@
                 document.getElementById('student-details').style.display = 'none';
                 document.getElementById('ranks-section').style.display = 'none';
                 document.getElementById('decision-box').style.display = 'none';
+                document.getElementById('result-progress').style.display = 'none';
                 
                 // البحث عن الطالب في جميع الملفات
                 let foundStudent = null;
@@ -942,10 +979,8 @@
                         block: 'start'
                     });
                     
-                    // إذا كان الطالب ناجحاً، قم بالاحتفال
-                    if (foundStudent.Decision && foundStudent.Decision.toLowerCase().includes("admis")) {
-                        startCelebration();
-                    }
+                    // بدء تأثير نزول النتائج تدريجياً
+                    animateResults(foundStudent);
                 } else {
                     // إخفاء رسالة التحميل وإظهار رسالة الخطأ
                     document.getElementById('loading-student').innerHTML = `
@@ -1025,13 +1060,13 @@
                 </div>
                 <div class="info-item">
                     <div class="info-label">المعدل</div>
-                    <div class="info-value">${student.MoyBac || 0}</div>
+                    <div class="info-value"><span class="rolling-value" id="animated-average">0.00</span></div>
                 </div>
             `;
             
             // تعبئة المجموع
             const totalScore = document.getElementById('total-score');
-            totalScore.textContent = `المعدل: ${student.MoyBac || 0}`;
+            totalScore.innerHTML = `المعدل: <span class="rolling-value" id="animated-total">0.00</span>`;
             totalScore.style.display = 'block';
             
             // تعبئة القرار
@@ -1047,7 +1082,9 @@
             } else {
                 decisionBox.classList.add("ajourne");
             }
-            decisionBox.style.display = 'flex';
+            
+            // إخفاء القرار مؤقتاً
+            decisionBox.style.display = 'none';
             
             // تعبئة التفاصيل الإضافية
             const studentDetails = document.getElementById('student-details');
@@ -1079,15 +1116,15 @@
             ranksContainer.innerHTML = `
                 <div class="rank-item">
                     <div class="rank-title">الرتبة على مستوى الوطن</div>
-                    <div class="rank-value">${getNationalRank(student) || 'N/A'}</div>
+                    <div class="rank-value"><span class="rolling-value" id="animated-national-rank">0</span></div>
                 </div>
                 <div class="rank-item">
                     <div class="rank-title">الرتبة على مستوى الولاية</div>
-                    <div class="rank-value">${getStateRank(student) || 'N/A'}</div>
+                    <div class="rank-value"><span class="rolling-value" id="animated-state-rank">0</span></div>
                 </div>
                 <div class="rank-item">
                     <div class="rank-title">الرتبة على مستوى المدرسة</div>
-                    <div class="rank-value">${getSchoolRank(student) || 'N/A'}</div>
+                    <div class="rank-value"><span class="rolling-value" id="animated-school-rank">0</span></div>
                 </div>
             `;
             
@@ -1095,6 +1132,91 @@
             document.getElementById('student-info').style.display = 'grid';
             document.getElementById('student-details').style.display = 'grid';
             document.getElementById('ranks-section').style.display = 'block';
+            document.getElementById('result-progress').style.display = 'block';
+        }
+
+        // دالة لعرض النتائج بشكل تدريجي مع تأثير النزول
+        function animateResults(student) {
+            const realAverage = parseFloat(student.MoyBac || 0);
+            const nationalRank = getNationalRank(student);
+            const stateRank = getStateRank(student);
+            const schoolRank = getSchoolRank(student);
+            
+            // العناصر التي سيتم تحديثها تدريجياً
+            const animatedElements = [
+                { id: 'animated-average', target: realAverage, current: 0 },
+                { id: 'animated-total', target: realAverage, current: 0 },
+                { id: 'animated-national-rank', target: nationalRank || 0, current: 0 },
+                { id: 'animated-state-rank', target: stateRank || 0, current: 0 },
+                { id: 'animated-school-rank', target: schoolRank || 0, current: 0 }
+            ];
+            
+            // شريط التقدم
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = '0%';
+            
+            // إعداد تأثير النزول التدريجي
+            let progress = 0;
+            const duration = 3000; // مدة العرض بالمللي ثانية
+            const interval = 30; // الفاصل الزمني للتحديث
+            const steps = duration / interval;
+            let stepCount = 0;
+            
+            // بدء العرض التدريجي
+            const animationInterval = setInterval(() => {
+                stepCount++;
+                progress = (stepCount / steps) * 100;
+                progressBar.style.width = `${progress}%`;
+                
+                // تحديث القيم
+                animatedElements.forEach(item => {
+                    if (stepCount <= steps) {
+                        // زيادة القيمة بشكل تدريجي مع بعض العشوائية
+                        const randomFactor = 0.8 + Math.random() * 0.4;
+                        item.current = item.target * (stepCount / steps) * randomFactor;
+                        
+                        // تحديد عدد المنازل العشرية حسب نوع القيمة
+                        const decimalPlaces = (item.id.includes('rank')) ? 0 : 2;
+                        
+                        // تحديث العنصر
+                        const element = document.getElementById(item.id);
+                        if (element) {
+                            element.textContent = item.current.toFixed(decimalPlaces);
+                        }
+                    }
+                });
+                
+                // إيقاف العرض عند اكتماله
+                if (stepCount >= steps) {
+                    clearInterval(animationInterval);
+                    
+                    // تعيين القيم النهائية بدقة
+                    animatedElements.forEach(item => {
+                        const element = document.getElementById(item.id);
+                        if (element) {
+                            element.textContent = (item.id.includes('rank')) 
+                                ? Math.round(item.target) 
+                                : item.target.toFixed(2);
+                        }
+                    });
+                    
+                    // إظهار القرار بعد التأخير
+                    setTimeout(() => {
+                        const decisionBox = document.getElementById('decision-box');
+                        decisionBox.style.display = 'flex';
+                        
+                        // إضافة تأثير الظهور التدريجي
+                        setTimeout(() => {
+                            decisionBox.classList.add('show');
+                            
+                            // إذا كان الطالب ناجحاً، قم بالاحتفال
+                            if (student.Decision && student.Decision.toLowerCase().includes("admis")) {
+                                startCelebration();
+                            }
+                        }, 100);
+                    }, 500);
+                }
+            }, interval);
         }
 
         // الحصول على الرتبة على مستوى الوطن (ضمن الشعبة فقط)
@@ -1356,4 +1478,4 @@
         });
     </script>
 </body>
-</html>
+    </html>
