@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام نتائج البكالوريا - التحديث</title>
+    <title>نظام نتائج البكالوريا</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <style>
@@ -85,21 +85,6 @@
             opacity: 0.9;
             margin-bottom: 20px;
             color: #e0f7fa;
-        }
-        
-        .update-notice {
-            background: rgba(255, 215, 0, 0.2);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 20px auto;
-            max-width: 800px;
-            border: 1px solid #ffd700;
-            text-align: center;
-        }
-        
-        .update-notice h3 {
-            color: #ffd700;
-            margin-bottom: 10px;
         }
         
         /* تصميم البحث */
@@ -345,12 +330,6 @@
             color: transparent;
         }
         
-        .rank-explanation {
-            font-size: 0.85rem;
-            color: #a0d2eb;
-            margin-top: 5px;
-        }
-        
         .marks-table {
             width: 100%;
             border-collapse: collapse;
@@ -591,14 +570,9 @@
                     <i class="fas fa-graduation-cap"></i>
                 </div>
                 <div>
-                    <h1>نظام نتائج البكالوريا - التحديث</h1>
-                    <div class="subtitle">تحديث نظام الترتيب حسب الشعبة</div>
+                    <h1>نظام نتائج البكالوريا</h1>
+                    <div class="subtitle">العام الدراسي 2024-2025</div>
                 </div>
-            </div>
-            
-            <div class="update-notice">
-                <h3><i class="fas fa-info-circle"></i> تم تحديث نظام الترتيب</h3>
-                <p>تم تعديل نظام الترتيب ليكون حسب الشعبة فقط (السلسلة) على مستوى الوطن، الولاية والمدرسة</p>
             </div>
         </header>
         
@@ -611,7 +585,9 @@
                 <div class="option-btn active" data-type="national">العشرة الأوائل على مستوى الوطن</div>
                 <div class="option-btn" data-type="branch">فرز حسب الشعبة</div>
                 <div class="option-btn" data-type="state">فرز حسب الولاية</div>
+                <div class="option-btn" data-type="district">فرز حسب المقاطعة</div>
                 <div class="option-btn" data-type="school">فرز حسب المدرسة</div>
+                <div class="option-btn" data-type="center">فرز حسب المركز</div>
             </div>
             
             <!-- فلاتر الفرز -->
@@ -620,11 +596,6 @@
                     <div class="filter-label">الشعبة</div>
                     <select id="branch-filter" class="filter-select">
                         <option value="">اختر الشعبة</option>
-                        <option value="علوم تجريبية">علوم تجريبية</option>
-                        <option value="رياضيات">رياضيات</option>
-                        <option value="تقني رياضي">تقني رياضي</option>
-                        <option value="آداب وفلسفة">آداب وفلسفة</option>
-                        <option value="لغات أجنبية">لغات أجنبية</option>
                     </select>
                 </div>
                 
@@ -632,11 +603,6 @@
                     <div class="filter-label">الولاية</div>
                     <select id="state-filter" class="filter-select">
                         <option value="">اختر الولاية</option>
-                        <option value="الجزائر">الجزائر</option>
-                        <option value="وهران">وهران</option>
-                        <option value="قسنطينة">قسنطينة</option>
-                        <option value="عنابة">عنابة</option>
-                        <option value="باتنة">باتنة</option>
                     </select>
                 </div>
                 
@@ -644,10 +610,6 @@
                     <div class="filter-label">المقاطعة</div>
                     <select id="district-filter" class="filter-select">
                         <option value="">اختر المقاطعة</option>
-                        <option value="باب الزوار">باب الزوار</option>
-                        <option value="سيدي امحمد">سيدي امحمد</option>
-                        <option value="حيدرة">حيدرة</option>
-                        <option value="القبة">القبة</option>
                     </select>
                 </div>
                 
@@ -655,10 +617,13 @@
                     <div class="filter-label">المدرسة</div>
                     <select id="school-filter" class="filter-select">
                         <option value="">اختر المدرسة</option>
-                        <option value="ثانوية العقيد لطفي">ثانوية العقيد لطفي</option>
-                        <option value="ثانوية الأمير عبد القادر">ثانوية الأمير عبد القادر</option>
-                        <option value="ثانوية الإخوة عباد">ثانوية الإخوة عباد</option>
-                        <option value="ثانوية محمد البشير الإبراهيمي">ثانوية محمد البشير الإبراهيمي</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <div class="filter-label">المركز</div>
+                    <select id="center-filter" class="filter-select">
+                        <option value="">اختر المركز</option>
                     </select>
                 </div>
                 
@@ -678,68 +643,12 @@
                 </div>
                 <div class="top-students-list" id="top-students-list">
                     <!-- سيتم تعبئة هذه المنطقة بالطلاب العشرة الأوائل -->
-                    <div class="student-item">
-                        <div class="student-rank">1</div>
-                        <div class="student-details">
-                            <div class="student-name">عمر بن عبد الله</div>
-                            <div class="student-info-row">
-                                <span>ثانوية الأمير عبد القادر</span>
-                                <span>رياضيات</span>
-                            </div>
-                            <div class="student-info-row">
-                                <span>رقم الجلوس: 123456</span>
-                                <span class="student-score">18.75</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="student-item">
-                        <div class="student-rank">2</div>
-                        <div class="student-details">
-                            <div class="student-name">سارة أحمد</div>
-                            <div class="student-info-row">
-                                <span>ثانوية الإخوة عباد</span>
-                                <span>علوم تجريبية</span>
-                            </div>
-                            <div class="student-info-row">
-                                <span>رقم الجلوس: 234567</span>
-                                <span class="student-score">18.50</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="student-item">
-                        <div class="student-rank">3</div>
-                        <div class="student-details">
-                            <div class="student-name">محمد خالد</div>
-                            <div class="student-info-row">
-                                <span>ثانوية العقيد لطفي</span>
-                                <span>تقني رياضي</span>
-                            </div>
-                            <div class="student-info-row">
-                                <span>رقم الجلوس: 345678</span>
-                                <span class="student-score">18.25</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="student-item">
-                        <div class="student-rank">4</div>
-                        <div class="student-details">
-                            <div class="student-name">فاطمة الزهراء</div>
-                            <div class="student-info-row">
-                                <span>ثانوية محمد البشير</span>
-                                <span>آداب وفلسفة</span>
-                            </div>
-                            <div class="student-info-row">
-                                <span>رقم الجلوس: 456789</span>
-                                <span class="student-score">18.00</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
         
         <!-- منطقة نتائج الطالب (تظهر فقط عند البحث برقم الجلوس) -->
-        <div class="results-container" id="student-results">
+        <div class="results-container" id="student-results" style="display: none;">
             <div class="result-card">
                 <div class="card-header">
                     <div class="card-title">نتائج الطالب</div>
@@ -748,50 +657,25 @@
                     </div>
                 </div>
                 
-                <div class="student-info">
-                    <div class="info-item">
-                        <div class="info-label">اسم الطالب</div>
-                        <div class="info-value">عمر بن عبد الله</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">رقم الجلوس</div>
-                        <div class="info-value">123456</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">الشعبة</div>
-                        <div class="info-value">رياضيات</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">المعدل</div>
-                        <div class="info-value">18.75</div>
-                    </div>
+                <div class="loading" id="loading-student">
+                    <i class="fas fa-spinner"></i>
+                    <div>جارٍ تحميل النتائج...</div>
                 </div>
                 
-                <div class="ranks-container">
-                    <div class="rank-item">
-                        <div class="rank-title">الرتبة على مستوى الوطن</div>
-                        <div class="rank-value">1</div>
-                        <div class="rank-explanation">(ضمن شعبة الرياضيات فقط)</div>
-                    </div>
-                    <div class="rank-item">
-                        <div class="rank-title">الرتبة على مستوى الولاية</div>
-                        <div class="rank-value">1</div>
-                        <div class="rank-explanation">(ضمن شعبة الرياضيات فقط)</div>
-                    </div>
-                    <div class="rank-item">
-                        <div class="rank-title">الرتبة على مستوى المدرسة</div>
-                        <div class="rank-value">1</div>
-                        <div class="rank-explanation">(ضمن شعبة الرياضيات فقط)</div>
-                    </div>
+                <div class="student-info" id="student-info" style="display: none;">
+                    <!-- سيتم تعبئة معلومات الطالب هنا -->
                 </div>
                 
-                <div class="total-score">
-                    المجموع: 18.75
+                <div class="ranks-container" id="ranks-container" style="display: none;">
+                    <!-- سيتم تعبئة الرتب هنا -->
                 </div>
                 
-                <div class="decision-box admis">
-                    <i class="fas fa-certificate"></i>
-                    <div>القرار: <strong>ناجح بدرجة جيد جداً</strong></div>
+                <div class="total-score" id="total-score" style="display: none;">
+                    <!-- سيتم تعبئة المجموع هنا -->
+                </div>
+                
+                <div class="decision-box" id="decision-box" style="display: none;">
+                    <!-- سيتم تعبئة القرار هنا -->
                 </div>
             </div>
             
@@ -803,93 +687,635 @@
                     </div>
                 </div>
                 
-                <div class="student-info">
-                    <div class="info-item">
-                        <div class="info-label">الولاية</div>
-                        <div class="info-value">الجزائر</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">المقاطعة</div>
-                        <div class="info-value">باب الزوار</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">المدرسة</div>
-                        <div class="info-value">ثانوية الأمير عبد القادر</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">المركز</div>
-                        <div class="info-value">مركز باب الزوار</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">رقم التسجيل</div>
-                        <div class="info-value">7890123</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">مكان الميلاد</div>
-                        <div class="info-value">الجزائر</div>
-                    </div>
+                <div class="student-info" id="student-details" style="display: none;">
+                    <!-- سيتم تعبئة تفاصيل إضافية هنا -->
                 </div>
             </div>
         </div>
         
         <footer>
-            © 2025 وزارة التربية - جميع الحقوق محفوظة | تم تحديث نظام الترتيب حسب الشعبة
+            © 2025 وزارة التربية - جميع الحقوق محفوظة | تم التصميم بعناية لتقديم أفضل تجربة للمستخدم
         </footer>
     </div>
     
     <script>
-        // دالة لجلب البيانات (محاكاة)
-        function fetchData() {
-            document.getElementById('loading-top').style.display = 'none';
-        }
+        // بيانات التطبيق
+        let allStudents = [];
+        let nationalTopStudents = [];
+        let currentFilters = {
+            branch: '',
+            state: '',
+            district: '',
+            school: '',
+            center: ''
+        };
         
-        // دالة للبحث عن طالب (محاكاة)
-        function searchStudent(searchTerm) {
-            // إظهار نتائج الطالب
-            document.getElementById('student-results').style.display = 'grid';
+        // هيكل البيانات الهرمي
+        const dataHierarchy = {
+            states: {},
+            districts: {},
+            schools: {},
+            centers: {},
+            branches: new Set()
+        };
+
+        // مسارات ملفات JSON
+        const DATA_URLS = [
+            'results_part1.json',
+            'results_part2.json'
+        ];
+
+        // دالة لاستخراج الولاية من كود المركز
+        function extractStateFromCode(code) {
+            if (!code) return 'غير معروف';
+            // استخراج الأرقام من بداية السلسلة
+            const matches = code.match(/^\d+/);
+            return matches ? `الولاية ${matches[0]}` : 'غير معروف';
+        }
+
+        // دالة لجلب البيانات من ملفات JSON
+        async function fetchData() {
+            try {
+                // إظهار رسالة التحميل
+                document.getElementById('loading-top').style.display = 'block';
+                document.getElementById('top-students-list').innerHTML = '';
+                
+                // جلب جميع ملفات JSON
+                const promises = DATA_URLS.map(url => 
+                    fetch(url).then(response => response.json())
+                );
+                
+                const results = await Promise.all(promises);
+                
+                // دمج جميع النتائج في مصفوفة واحدة
+                allStudents = results.flat();
+                
+                // فرز الطلاب حسب المعدل (تنازلياً)
+                allStudents.sort((a, b) => b.MoyBac - a.MoyBac);
+                
+                // استخراج العشرة الأوائل على مستوى الوطن
+                nationalTopStudents = allStudents.slice(0, 10);
+                
+                // استخراج البيانات الهرمية
+                extractHierarchicalData();
+                
+                // تعبئة فلاتر الفرز
+                populateFilters();
+                
+                // عرض العشرة الأوائل على مستوى الوطن
+                displayTopStudents(nationalTopStudents, "العشرة الأوائل على مستوى الوطن");
+                
+                // إخفاء رسالة التحميل
+                document.getElementById('loading-top').style.display = 'none';
+                
+            } catch (error) {
+                console.error('حدث خطأ في جلب البيانات:', error);
+                document.getElementById('loading-top').innerHTML = `
+                    <div style="color: #ff6b6b; text-align: center; padding: 20px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem;"></i>
+                        <div>حدث خطأ في تحميل البيانات. يرجى المحاولة لاحقاً.</div>
+                    </div>
+                `;
+            }
+        }
+
+        // استخراج البيانات الهرمية
+        function extractHierarchicalData() {
+            dataHierarchy.branches = new Set();
+            dataHierarchy.states = {};
+            dataHierarchy.districts = {};
+            dataHierarchy.schools = {};
+            dataHierarchy.centers = {};
             
-            // التمرير إلى نتائج الطالب
-            document.getElementById('student-results').scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+            allStudents.forEach(student => {
+                // استخراج الشعب
+                if (student.SERIE) {
+                    dataHierarchy.branches.add(student.SERIE);
+                }
+                
+                // استخراج الولايات من كود المركز
+                const state = extractStateFromCode(student.Code);
+                if (!dataHierarchy.states[state]) {
+                    dataHierarchy.states[state] = {
+                        districts: new Set(),
+                        schools: new Set(),
+                        centers: new Set()
+                    };
+                }
+                
+                // استخراج المقاطعات
+                const district = student.Centre || 'غير معروف';
+                if (state && district) {
+                    dataHierarchy.states[state].districts.add(district);
+                    
+                    if (!dataHierarchy.districts[district]) {
+                        dataHierarchy.districts[district] = {
+                            schools: new Set(),
+                            centers: new Set()
+                        };
+                    }
+                    
+                    // استخراج المدارس
+                    const school = student.Ecole || 'غير معروف';
+                    if (school) {
+                        dataHierarchy.states[state].schools.add(school);
+                        dataHierarchy.districts[district].schools.add(school);
+                        
+                        if (!dataHierarchy.schools[school]) {
+                            dataHierarchy.schools[school] = {
+                                centers: new Set()
+                            };
+                        }
+                        
+                        // استخراج المراكز
+                        const center = student.Centre || 'غير معروف';
+                        if (center) {
+                            dataHierarchy.states[state].centers.add(center);
+                            dataHierarchy.districts[district].centers.add(center);
+                            dataHierarchy.schools[school].centers.add(center);
+                            
+                            if (!dataHierarchy.centers[center]) {
+                                dataHierarchy.centers[center] = true;
+                            }
+                        }
+                    }
+                }
             });
         }
-        
-        // بدء الاحتفال للطالب الناجح (محاكاة)
+
+        // تعبئة فلاتر الفرز
+        function populateFilters() {
+            // تعبئة فلتر الشعبة
+            const branchFilter = document.getElementById('branch-filter');
+            branchFilter.innerHTML = '<option value="">اختر الشعبة</option>';
+            dataHierarchy.branches.forEach(branch => {
+                const option = document.createElement('option');
+                option.value = branch;
+                option.textContent = branch;
+                branchFilter.appendChild(option);
+            });
+            
+            // تعبئة فلتر الولاية
+            const stateFilter = document.getElementById('state-filter');
+            stateFilter.innerHTML = '<option value="">اختر الولاية</option>';
+            Object.keys(dataHierarchy.states).sort().forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                stateFilter.appendChild(option);
+            });
+            
+            // تعبئة فلتر المقاطعة
+            const districtFilter = document.getElementById('district-filter');
+            districtFilter.innerHTML = '<option value="">اختر المقاطعة</option>';
+            
+            // تعبئة فلتر المدرسة
+            const schoolFilter = document.getElementById('school-filter');
+            schoolFilter.innerHTML = '<option value="">اختر المدرسة</option>';
+            
+            // تعبئة فلتر المركز
+            const centerFilter = document.getElementById('center-filter');
+            centerFilter.innerHTML = '<option value="">اختر المركز</option>';
+        }
+
+        // تحديث فلاتر المقاطعة بناءً على الولاية المختارة
+        function updateDistrictFilter(state) {
+            const districtFilter = document.getElementById('district-filter');
+            districtFilter.innerHTML = '<option value="">اختر المقاطعة</option>';
+            
+            if (state && dataHierarchy.states[state]) {
+                dataHierarchy.states[state].districts.forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district;
+                    option.textContent = district;
+                    districtFilter.appendChild(option);
+                });
+            }
+        }
+
+        // تحديث فلاتر المدرسة بناءً على الولاية والمقاطعة المختارة
+        function updateSchoolFilter(state, district) {
+            const schoolFilter = document.getElementById('school-filter');
+            schoolFilter.innerHTML = '<option value="">اختر المدرسة</option>';
+            
+            if (state && dataHierarchy.states[state]) {
+                dataHierarchy.states[state].schools.forEach(school => {
+                    const option = document.createElement('option');
+                    option.value = school;
+                    option.textContent = school;
+                    schoolFilter.appendChild(option);
+                });
+            }
+            
+            if (district && dataHierarchy.districts[district]) {
+                dataHierarchy.districts[district].schools.forEach(school => {
+                    const option = document.createElement('option');
+                    option.value = school;
+                    option.textContent = school;
+                    schoolFilter.appendChild(option);
+                });
+            }
+        }
+
+        // تحديث فلاتر المركز بناءً على المدرسة المختارة
+        function updateCenterFilter(school) {
+            const centerFilter = document.getElementById('center-filter');
+            centerFilter.innerHTML = '<option value="">اختر المركز</option>';
+            
+            if (school && dataHierarchy.schools[school]) {
+                dataHierarchy.schools[school].centers.forEach(center => {
+                    const option = document.createElement('option');
+                    option.value = center;
+                    option.textContent = center;
+                    centerFilter.appendChild(option);
+                });
+            }
+        }
+
+        // دالة للبحث عن طالب برقم الجلوس أو رقم NNI
+        async function searchStudent(searchTerm) {
+            try {
+                // إظهار رسالة التحميل
+                document.getElementById('student-results').style.display = 'grid';
+                document.getElementById('loading-student').style.display = 'block';
+                document.getElementById('student-info').style.display = 'none';
+                document.getElementById('ranks-container').style.display = 'none';
+                document.getElementById('total-score').style.display = 'none';
+                document.getElementById('student-details').style.display = 'none';
+                document.getElementById('decision-box').style.display = 'none';
+                
+                // البحث عن الطالب في جميع الملفات
+                let foundStudent = null;
+                
+                // إذا كانت البيانات محملة مسبقاً
+                if (allStudents.length > 0) {
+                    foundStudent = allStudents.find(student => 
+                        student["Numéro Bac"] == searchTerm || 
+                        student["NNI"] == searchTerm
+                    );
+                } 
+                // إذا لم تكن البيانات محملة بعد
+                else {
+                    // البحث في كل ملف على حدة
+                    for (const url of DATA_URLS) {
+                        const response = await fetch(url);
+                        const data = await response.json();
+                        foundStudent = data.find(student => 
+                            student["Numéro Bac"] == searchTerm || 
+                            student["NNI"] == searchTerm
+                        );
+                        if (foundStudent) break;
+                    }
+                }
+                
+                if (foundStudent) {
+                    // عرض نتائج الطالب
+                    displayStudentResults(foundStudent);
+                    document.getElementById('loading-student').style.display = 'none';
+                    
+                    // التمرير إلى نتائج الطالب
+                    document.getElementById('student-results').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // إذا كان الطالب ناجحاً، قم بالاحتفال
+                    if (foundStudent.Decision && foundStudent.Decision.toLowerCase().includes("admis")) {
+                        startCelebration();
+                    }
+                } else {
+                    // إخفاء رسالة التحميل وإظهار رسالة الخطأ
+                    document.getElementById('loading-student').innerHTML = `
+                        <div style="color: #ff6b6b; text-align: center; padding: 20px;">
+                            <i class="fas fa-exclamation-circle" style="font-size: 2rem;"></i>
+                            <div>لم يتم العثور على نتائج لرقم البحث: ${searchTerm}</div>
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('حدث خطأ في البحث:', error);
+                document.getElementById('loading-student').innerHTML = `
+                    <div style="color: #ff6b6b; text-align: center; padding: 20px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem;"></i>
+                        <div>حدث خطأ في البحث. يرجى المحاولة لاحقاً.</div>
+                    </div>
+                `;
+            }
+        }
+
+        // دالة لعرض قائمة الطلاب
+        function displayTopStudents(students, title) {
+            const container = document.getElementById('top-students-list');
+            container.innerHTML = '';
+            
+            const titleElement = document.querySelector('.top-students-title');
+            titleElement.textContent = title;
+            
+            if (students.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: #ffd700;">
+                        <i class="fas fa-info-circle" style="font-size: 2rem;"></i>
+                        <div>لا توجد بيانات متاحة للعرض</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            students.forEach((student, index) => {
+                const studentItem = document.createElement('div');
+                studentItem.className = 'student-item';
+                studentItem.innerHTML = `
+                    <div class="student-rank">${index + 1}</div>
+                    <div class="student-details">
+                        <div class="student-name">${student["Nom Arabe"] || "غير معروف"}</div>
+                        <div class="student-info-row">
+                            <span>${student.Centre || ""}</span>
+                            <span>${student.SERIE || ""}</span>
+                        </div>
+                        <div class="student-info-row">
+                            <span>رقم الجلوس: ${student["Numéro Bac"] || ""}</span>
+                            <span class="student-score">${student.MoyBac || 0}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(studentItem);
+            });
+        }
+
+        // دالة لعرض نتائج الطالب
+        function displayStudentResults(student) {
+            // تعبئة معلومات الطالب
+            const studentInfo = document.getElementById('student-info');
+            studentInfo.innerHTML = `
+                <div class="info-item">
+                    <div class="info-label">اسم الطالب</div>
+                    <div class="info-value">${student["Nom Arabe"] || "غير معروف"}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">رقم الجلوس</div>
+                    <div class="info-value">${student["Numéro Bac"] || "غير معروف"}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">الشعبة</div>
+                    <div class="info-value">${student.SERIE || "غير معروف"}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">المعدل</div>
+                    <div class="info-value">${student.MoyBac || 0}</div>
+                </div>
+            `;
+            
+            // تعبئة الرتب
+            const ranksContainer = document.getElementById('ranks-container');
+            ranksContainer.innerHTML = `
+                <div class="rank-item">
+                    <div class="rank-title">الرتبة على مستوى الوطن</div>
+                    <div class="rank-value">${getNationalRank(student) || 'N/A'}</div>
+                </div>
+                <div class="rank-item">
+                    <div class="rank-title">الرتبة على مستوى الولاية</div>
+                    <div class="rank-value">${getStateRank(student) || 'N/A'}</div>
+                </div>
+                <div class="rank-item">
+                    <div class="rank-title">الرتبة على مستوى المدرسة</div>
+                    <div class="rank-value">${getSchoolRank(student) || 'N/A'}</div>
+                </div>
+            `;
+            ranksContainer.style.display = 'grid';
+            
+            // تعبئة المجموع
+            const totalScore = document.getElementById('total-score');
+            totalScore.textContent = `المعدل: ${student.MoyBac || 0}`;
+            totalScore.style.display = 'block';
+            
+            // تعبئة القرار
+            const decisionBox = document.getElementById('decision-box');
+            decisionBox.innerHTML = `
+                <i class="fas fa-certificate"></i>
+                <div>القرار: <strong>${student.Decision || "غير محدد"}</strong></div>
+            `;
+            
+            // إضافة فئة التصميم حسب القرار
+            if (student.Decision && student.Decision.toLowerCase().includes("admis")) {
+                decisionBox.classList.add("admis");
+            } else {
+                decisionBox.classList.add("ajourne");
+            }
+            decisionBox.style.display = 'flex';
+            
+            // تعبئة التفاصيل الإضافية
+            const studentDetails = document.getElementById('student-details');
+            studentDetails.innerHTML = `
+                <div class="info-item">
+                    <div class="info-label">الولاية</div>
+                    <div class="info-value">${extractStateFromCode(student.Code) || "غير معروف"}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">المقاطعة</div>
+                    <div class="info-value">${student.Centre || "غير معروف"}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">المدرسة</div>
+                    <div class="info-value">${student.Ecole || "غير معروف"}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">المركز</div>
+                    <div class="info-value">${student.Centre || "غير معروف"}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">رقم التسجيل</div>
+                    <div class="info-value">${student.NOREG || "غير معروف"}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">مكان الميلاد</div>
+                    <div class="info-value">${student["Lieu Naiss"] || "غير معروف"}</div>
+                </div>
+            `;
+            
+            // إظهار العناصر
+            document.getElementById('student-info').style.display = 'grid';
+            document.getElementById('student-details').style.display = 'grid';
+        }
+
+        // الحصول على الرتبة على مستوى الوطن (ضمن الشعبة فقط)
+        function getNationalRank(student) {
+            if (!student["Numéro Bac"] || !student.SERIE) return null;
+            
+            // تصفية الطلاب بنفس الشعبة
+            const branchStudents = allStudents.filter(s => s.SERIE === student.SERIE);
+            
+            // ترتيب الطلاب في الشعبة حسب المعدل (تنازلياً)
+            branchStudents.sort((a, b) => b.MoyBac - a.MoyBac);
+            
+            // إيجاد رتبة الطالب ضمن شعبه
+            const index = branchStudents.findIndex(s => s["Numéro Bac"] === student["Numéro Bac"]);
+            return index !== -1 ? index + 1 : null;
+        }
+
+        // الحصول على الرتبة على مستوى الولاية (ضمن الشعبة فقط)
+        function getStateRank(student) {
+            if (!student["Numéro Bac"] || !student.Code || !student.SERIE) return null;
+            const state = extractStateFromCode(student.Code);
+            
+            // تصفية الطلاب بنفس الولاية ونفس الشعبة
+            const stateStudents = allStudents.filter(s => 
+                extractStateFromCode(s.Code) === state && 
+                s.SERIE === student.SERIE
+            );
+            
+            stateStudents.sort((a, b) => b.MoyBac - a.MoyBac);
+            const index = stateStudents.findIndex(s => s["Numéro Bac"] === student["Numéro Bac"]);
+            return index !== -1 ? index + 1 : null;
+        }
+
+        // الحصول على الرتبة على مستوى المدرسة (ضمن الشعبة فقط)
+        function getSchoolRank(student) {
+            if (!student["Numéro Bac"] || !student.Ecole || !student.SERIE) return null;
+            
+            // تصفية الطلاب بنفس المدرسة ونفس الشعبة
+            const schoolStudents = allStudents.filter(s => 
+                s.Ecole === student.Ecole && 
+                s.SERIE === student.SERIE
+            );
+            
+            schoolStudents.sort((a, b) => b.MoyBac - a.MoyBac);
+            const index = schoolStudents.findIndex(s => s["Numéro Bac"] === student["Numéro Bac"]);
+            return index !== -1 ? index + 1 : null;
+        }
+
+        // تطبيق الفلاتر وعرض النتائج
+        function applyFiltersAndDisplay() {
+            // إظهار رسالة التحميل
+            document.getElementById('loading-top').style.display = 'block';
+            document.getElementById('top-students-list').innerHTML = '';
+            
+            // الحصول على القيم المحددة
+            const branch = document.getElementById('branch-filter').value;
+            const state = document.getElementById('state-filter').value;
+            const district = document.getElementById('district-filter').value;
+            const school = document.getElementById('school-filter').value;
+            const center = document.getElementById('center-filter').value;
+            
+            let filteredStudents = [...allStudents];
+            let title = "الطلاب";
+            
+            // تطبيق الفلاتر
+            if (branch) {
+                filteredStudents = filteredStudents.filter(s => s.SERIE === branch);
+                title += ` في شعبة ${branch}`;
+            }
+            
+            if (state) {
+                filteredStudents = filteredStudents.filter(s => extractStateFromCode(s.Code) === state);
+                title += ` في ولاية ${state}`;
+            }
+            
+            if (district) {
+                filteredStudents = filteredStudents.filter(s => s.Centre === district);
+                title += ` في مقاطعة ${district}`;
+            }
+            
+            if (school) {
+                filteredStudents = filteredStudents.filter(s => s.Ecole === school);
+                title += ` في مدرسة ${school}`;
+            }
+            
+            if (center) {
+                filteredStudents = filteredStudents.filter(s => s.Centre === center);
+                title += ` في مركز ${center}`;
+            }
+            
+            // فرز الطلاب حسب المعدل
+            filteredStudents.sort((a, b) => b.MoyBac - a.MoyBac);
+            
+            // تحديد عدد الطلاب المعروضين
+            let displayStudents = filteredStudents;
+            if (school || center) {
+                // عند اختيار مدرسة أو مركز، عرض جميع الناجحين
+                title = `الطلاب الناجحون ${title}`;
+            } else {
+                // في الحالات الأخرى، عرض العشرة الأوائل فقط
+                displayStudents = filteredStudents.slice(0, 10);
+                title = `العشرة الأوائل ${title}`;
+            }
+            
+            // عرض الطلاب بعد تأخير بسيط لمحاكاة جلب البيانات
+            setTimeout(() => {
+                displayTopStudents(displayStudents, title);
+                document.getElementById('loading-top').style.display = 'none';
+            }, 300);
+        }
+
+        // بدء الاحتفال للطالب الناجح
         function startCelebration() {
             // إضافة فئة الاحتفال للجسم
             document.body.classList.add('celebration');
             
+            // عرض تأثيرات الاحتفال
+            const celebrationEffect = document.getElementById('celebration-effect');
+            celebrationEffect.style.display = 'block';
+            
+            // إنشاء قطع الاحتفال
+            for (let i = 0; i < 150; i++) {
+                createConfetti();
+            }
+            
             // إيقاف الاحتفال بعد 5 ثوانٍ
             setTimeout(() => {
                 document.body.classList.remove('celebration');
+                celebrationEffect.style.display = 'none';
+                celebrationEffect.innerHTML = '';
             }, 5000);
         }
         
-        // تطبيق الفلاتر وعرض النتائج (محاكاة)
-        function applyFiltersAndDisplay() {
-            document.getElementById('loading-top').style.display = 'block';
+        // إنشاء قطعة احتفال
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
             
+            // ألوان عشوائية
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.backgroundColor = color;
+            
+            // حجم عشوائي
+            const size = Math.random() * 10 + 5;
+            confetti.style.width = `${size}px`;
+            confetti.style.height = `${size}px`;
+            
+            // موضع عشوائي
+            confetti.style.left = `${Math.random() * 100}vw`;
+            confetti.style.top = `${Math.random() * 100}vh`;
+            
+            // حركة عشوائية
+            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+            
+            // إضافة القطعة إلى تأثير الاحتفال
+            document.getElementById('celebration-effect').appendChild(confetti);
+            
+            // تحريك القطعة
+            animateConfetti(confetti);
+        }
+        
+        // تحريك قطعة الاحتفال
+        function animateConfetti(confetti) {
+            const duration = Math.random() * 3 + 2;
+            const xMovement = (Math.random() - 0.5) * 200;
+            const yMovement = Math.random() * -100 - 50;
+            
+            confetti.style.transition = `all ${duration}s ease-out`;
+            confetti.style.transform = `translate(${xMovement}px, ${yMovement}px) rotate(${Math.random() * 720}deg)`;
+            confetti.style.opacity = '0';
+            
+            // إزالة القطعة بعد انتهاء الحركة
             setTimeout(() => {
-                document.getElementById('loading-top').style.display = 'none';
-            }, 1000);
+                if (confetti.parentNode) {
+                    confetti.parentNode.removeChild(confetti);
+                }
+            }, duration * 1000);
         }
-        
-        // تحديث فلاتر المقاطعة بناءً على الولاية المختارة (محاكاة)
-        function updateDistrictFilter(state) {
-            // لا شيء في هذا المثال التوضيحي
-        }
-        
-        // تحديث فلاتر المدرسة بناءً على الولاية والمقاطعة المختارة (محاكاة)
-        function updateSchoolFilter(state, district) {
-            // لا شيء في هذا المثال التوضيحي
-        }
-        
-        // تحديث فلاتر المركز بناءً على المدرسة المختارة (محاكاة)
-        function updateCenterFilter(school) {
-            // لا شيء في هذا المثال التوضيحي
-        }
-        
+
         // تهيئة التطبيق عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', function() {
             // جلب البيانات الأولية
@@ -907,11 +1333,21 @@
                     // إضافة النشاط للزر المحدد
                     this.classList.add('active');
                     
+                    // إخفاء نتائج الطالب
+                    document.getElementById('student-results').style.display = 'none';
+                    
+                    // إظهار قائمة العشرة الأوائل
+                    document.getElementById('top-students-section').style.display = 'block';
+                    
+                    // تحديد نوع الفرز
+                    const type = this.getAttribute('data-type');
+                    
                     // إظهار أو إخفاء فلاتر الفرز
-                    if (this.getAttribute('data-type') !== 'national') {
+                    if (type !== 'national') {
                         filtersContainer.style.display = 'flex';
                     } else {
                         filtersContainer.style.display = 'none';
+                        displayTopStudents(nationalTopStudents, "العشرة الأوائل على مستوى الوطن");
                     }
                 });
             });
@@ -920,6 +1356,7 @@
             const stateFilter = document.getElementById('state-filter');
             stateFilter.addEventListener('change', function() {
                 updateDistrictFilter(this.value);
+                updateSchoolFilter(this.value, '');
             });
             
             // إعداد تفاعلية فلاتر المقاطعة
@@ -962,9 +1399,6 @@
                 
                 // البحث عن الطالب
                 searchStudent(searchTerm);
-                
-                // بدء الاحتفال
-                startCelebration();
             });
             
             // السماح بالبحث عند الضغط على Enter
