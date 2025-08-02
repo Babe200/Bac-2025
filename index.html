@@ -592,7 +592,7 @@
         
         <div class="search-container">
             <div class="search-box">
-                <input type="text" id="search-input" placeholder="ابحث برقم الجلوس أو رقم NNI...">
+                <input type="text" id="search-input" placeholder="ابحث برقم الجلوس...">
                 <button class="search-btn">بحث <i class="fas fa-search"></i></button>
             </div>
             <div class="search-options">
@@ -733,14 +733,6 @@
             'results_part2.json'
         ];
 
-        // دالة لاستخراج الولاية من كود المركز
-        function extractStateFromCode(code) {
-            if (!code) return 'غير معروف';
-            // استخراج الأرقام من بداية السلسلة
-            const matches = code.match(/^\d+/);
-            return matches ? `الولاية ${matches[0]}` : 'غير معروف';
-        }
-
         // دالة لجلب البيانات من ملفات JSON
         async function fetchData() {
             try {
@@ -759,7 +751,7 @@
                 allStudents = results.flat();
                 
                 // فرز الطلاب حسب المعدل (تنازلياً)
-                allStudents.sort((a, b) => b.MoyBac - a.MoyBac);
+                allStudents.sort((a, b) => b["Moy Bac"] - a["Moy Bac"]);
                 
                 // استخراج العشرة الأوائل على مستوى الوطن
                 nationalTopStudents = allStudents.slice(0, 10);
@@ -800,8 +792,8 @@
                     dataHierarchy.branches.add(student.SERIE);
                 }
                 
-                // استخراج الولايات من كود المركز
-                const state = extractStateFromCode(student.Code);
+                // استخراج الولايات من حقل Wilaya_AR
+                const state = student["Wilaya_AR"] || 'غير معروف';
                 if (!dataHierarchy.states[state]) {
                     dataHierarchy.states[state] = {
                         schools: new Set(),
@@ -810,7 +802,7 @@
                 }
                 
                 // استخراج المدارس
-                const school = student.Ecole || 'غير معروف';
+                const school = student["Etablissement_AR"] || 'غير معروف';
                 if (school) {
                     dataHierarchy.states[state].schools.add(school);
                     
@@ -821,7 +813,7 @@
                     }
                     
                     // استخراج المراكز
-                    const center = student.Centre || 'غير معروف';
+                    const center = student["Centre Examen_AR"] || 'غير معروف';
                     if (center) {
                         dataHierarchy.states[state].centers.add(center);
                         dataHierarchy.schools[school].centers.add(center);
@@ -895,7 +887,7 @@
             }
         }
 
-        // دالة للبحث عن طالب برقم الجلوس أو رقم NNI
+        // دالة للبحث عن طالب برقم الجلوس
         async function searchStudent(searchTerm) {
             try {
                 // إظهار رسالة التحميل
@@ -913,8 +905,7 @@
                 // إذا كانت البيانات محملة مسبقاً
                 if (allStudents.length > 0) {
                     foundStudent = allStudents.find(student => 
-                        student["Numéro Bac"] == searchTerm || 
-                        student["NNI"] == searchTerm
+                        student["NODOSS"] == searchTerm
                     );
                 } 
                 // إذا لم تكن البيانات محملة بعد
@@ -924,8 +915,7 @@
                         const response = await fetch(url);
                         const data = await response.json();
                         foundStudent = data.find(student => 
-                            student["Numéro Bac"] == searchTerm || 
-                            student["NNI"] == searchTerm
+                            student["NODOSS"] == searchTerm
                         );
                         if (foundStudent) break;
                     }
@@ -943,7 +933,7 @@
                     });
                     
                     // إذا كان الطالب ناجحاً، قم بالاحتفال
-                    if (foundStudent.Decision && foundStudent.Decision.toLowerCase().includes("admis")) {
+                    if (foundStudent.Decision && foundStudent.Decision.toLowerCase().includes("ناجح")) {
                         startCelebration();
                     }
                 } else {
@@ -991,14 +981,14 @@
                 studentItem.innerHTML = `
                     <div class="student-rank">${index + 1}</div>
                     <div class="student-details">
-                        <div class="student-name">${student["Nom Arabe"] || "غير معروف"}</div>
+                        <div class="student-name">${student["NOM_AR"] || "غير معروف"}</div>
                         <div class="student-info-row">
-                            <span>${student.Centre || ""}</span>
+                            <span>${student["Centre Examen_AR"] || ""}</span>
                             <span>${student.SERIE || ""}</span>
                         </div>
                         <div class="student-info-row">
-                            <span>رقم الجلوس: ${student["Numéro Bac"] || ""}</span>
-                            <span class="student-score">${student.MoyBac || 0}</span>
+                            <span>رقم الجلوس: ${student["NODOSS"] || ""}</span>
+                            <span class="student-score">${student["Moy Bac"] || 0}</span>
                         </div>
                     </div>
                 `;
@@ -1013,11 +1003,11 @@
             studentInfo.innerHTML = `
                 <div class="info-item">
                     <div class="info-label">اسم الطالب</div>
-                    <div class="info-value">${student["Nom Arabe"] || "غير معروف"}</div>
+                    <div class="info-value">${student["NOM_AR"] || "غير معروف"}</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">رقم الجلوس</div>
-                    <div class="info-value">${student["Numéro Bac"] || "غير معروف"}</div>
+                    <div class="info-value">${student["NODOSS"] || "غير معروف"}</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">الشعبة</div>
@@ -1025,13 +1015,13 @@
                 </div>
                 <div class="info-item">
                     <div class="info-label">المعدل</div>
-                    <div class="info-value">${student.MoyBac || 0}</div>
+                    <div class="info-value">${student["Moy Bac"] || 0}</div>
                 </div>
             `;
             
             // تعبئة المجموع
             const totalScore = document.getElementById('total-score');
-            totalScore.textContent = `المعدل: ${student.MoyBac || 0}`;
+            totalScore.textContent = `المعدل: ${student["Moy Bac"] || 0}`;
             totalScore.style.display = 'block';
             
             // تعبئة القرار
@@ -1042,7 +1032,7 @@
             `;
             
             // إضافة فئة التصميم حسب القرار
-            if (student.Decision && student.Decision.toLowerCase().includes("admis")) {
+            if (student.Decision && student.Decision.toLowerCase().includes("ناجح")) {
                 decisionBox.classList.add("admis");
             } else {
                 decisionBox.classList.add("ajourne");
@@ -1054,23 +1044,19 @@
             studentDetails.innerHTML = `
                 <div class="info-item">
                     <div class="info-label">الولاية</div>
-                    <div class="info-value">${extractStateFromCode(student.Code) || "غير معروف"}</div>
+                    <div class="info-value">${student["Wilaya_AR"] || "غير معروف"}</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">المدرسة</div>
-                    <div class="info-value">${student.Ecole || "غير معروف"}</div>
+                    <div class="info-value">${student["Etablissement_AR"] || "غير معروف"}</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">المركز</div>
-                    <div class="info-value">${student.Centre || "غير معروف"}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">رقم التسجيل</div>
-                    <div class="info-value">${student.NOREG || "غير معروف"}</div>
+                    <div class="info-value">${student["Centre Examen_AR"] || "غير معروف"}</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">مكان الميلاد</div>
-                    <div class="info-value">${student["Lieu Naiss"] || "غير معروف"}</div>
+                    <div class="info-value">${student["LIEUNN_AR"] || "غير معروف"}</div>
                 </div>
             `;
             
@@ -1099,47 +1085,47 @@
 
         // الحصول على الرتبة على مستوى الوطن (ضمن الشعبة فقط)
         function getNationalRank(student) {
-            if (!student["Numéro Bac"] || !student.SERIE) return null;
+            if (!student["NODOSS"] || !student.SERIE) return null;
             
             // تصفية الطلاب بنفس الشعبة
             const branchStudents = allStudents.filter(s => s.SERIE === student.SERIE);
             
             // ترتيب الطلاب في الشعبة حسب المعدل (تنازلياً)
-            branchStudents.sort((a, b) => b.MoyBac - a.MoyBac);
+            branchStudents.sort((a, b) => b["Moy Bac"] - a["Moy Bac"]);
             
             // إيجاد رتبة الطالب ضمن شعبه
-            const index = branchStudents.findIndex(s => s["Numéro Bac"] === student["Numéro Bac"]);
+            const index = branchStudents.findIndex(s => s["NODOSS"] === student["NODOSS"]);
             return index !== -1 ? index + 1 : null;
         }
 
         // الحصول على الرتبة على مستوى الولاية (ضمن الشعبة فقط)
         function getStateRank(student) {
-            if (!student["Numéro Bac"] || !student.Code || !student.SERIE) return null;
-            const state = extractStateFromCode(student.Code);
+            if (!student["NODOSS"] || !student["Wilaya_AR"] || !student.SERIE) return null;
+            const state = student["Wilaya_AR"];
             
             // تصفية الطلاب بنفس الولاية ونفس الشعبة
             const stateStudents = allStudents.filter(s => 
-                extractStateFromCode(s.Code) === state && 
+                s["Wilaya_AR"] === state && 
                 s.SERIE === student.SERIE
             );
             
-            stateStudents.sort((a, b) => b.MoyBac - a.MoyBac);
-            const index = stateStudents.findIndex(s => s["Numéro Bac"] === student["Numéro Bac"]);
+            stateStudents.sort((a, b) => b["Moy Bac"] - a["Moy Bac"]);
+            const index = stateStudents.findIndex(s => s["NODOSS"] === student["NODOSS"]);
             return index !== -1 ? index + 1 : null;
         }
 
         // الحصول على الرتبة على مستوى المدرسة (ضمن الشعبة فقط)
         function getSchoolRank(student) {
-            if (!student["Numéro Bac"] || !student.Ecole || !student.SERIE) return null;
+            if (!student["NODOSS"] || !student["Etablissement_AR"] || !student.SERIE) return null;
             
             // تصفية الطلاب بنفس المدرسة ونفس الشعبة
             const schoolStudents = allStudents.filter(s => 
-                s.Ecole === student.Ecole && 
+                s["Etablissement_AR"] === student["Etablissement_AR"] && 
                 s.SERIE === student.SERIE
             );
             
-            schoolStudents.sort((a, b) => b.MoyBac - a.MoyBac);
-            const index = schoolStudents.findIndex(s => s["Numéro Bac"] === student["Numéro Bac"]);
+            schoolStudents.sort((a, b) => b["Moy Bac"] - a["Moy Bac"]);
+            const index = schoolStudents.findIndex(s => s["NODOSS"] === student["NODOSS"]);
             return index !== -1 ? index + 1 : null;
         }
 
@@ -1165,22 +1151,22 @@
             }
             
             if (state) {
-                filteredStudents = filteredStudents.filter(s => extractStateFromCode(s.Code) === state);
+                filteredStudents = filteredStudents.filter(s => s["Wilaya_AR"] === state);
                 title += ` في ولاية ${state}`;
             }
             
             if (school) {
-                filteredStudents = filteredStudents.filter(s => s.Ecole === school);
+                filteredStudents = filteredStudents.filter(s => s["Etablissement_AR"] === school);
                 title += ` في مدرسة ${school}`;
             }
             
             if (center) {
-                filteredStudents = filteredStudents.filter(s => s.Centre === center);
+                filteredStudents = filteredStudents.filter(s => s["Centre Examen_AR"] === center);
                 title += ` في مركز ${center}`;
             }
             
             // فرز الطلاب حسب المعدل
-            filteredStudents.sort((a, b) => b.MoyBac - a.MoyBac);
+            filteredStudents.sort((a, b) => b["Moy Bac"] - a["Moy Bac"]);
             
             // تحديد عدد الطلاب المعروضين
             let displayStudents = filteredStudents;
@@ -1328,7 +1314,7 @@
                 const searchTerm = searchInput.value.trim();
                 
                 if(searchTerm === '') {
-                    searchInput.placeholder = 'الرجاء إدخال رقم جلوس أو رقم NNI...';
+                    searchInput.placeholder = 'الرجاء إدخال رقم جلوس...';
                     searchInput.style.border = '2px solid #ff7e5f';
                     setTimeout(() => {
                         searchInput.style.border = 'none';
@@ -1356,4 +1342,4 @@
         });
     </script>
 </body>
-    </html>
+</html>
